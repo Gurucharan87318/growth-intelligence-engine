@@ -79,16 +79,16 @@ export function ChannelPerformance({ rows }: ChannelPerformanceProps) {
                     {row.acquisition_channel}
                   </TableCell>
                   <TableCell className="text-right text-slate-600">
-                    {row.users.toLocaleString("en-IN")}
+                    {Number(row.users).toLocaleString("en-IN")}
                   </TableCell>
                   <TableCell className="text-right text-slate-600">
-                    {formatCurrency(row.revenue)}
+                    {formatCurrency(Number(row.revenue))}
                   </TableCell>
                   <TableCell className="text-right text-slate-600">
-                    {formatCurrency(row.avg_clv)}
+                    {formatCurrency(Number(row.avg_clv))}
                   </TableCell>
                   <TableCell className="text-right text-slate-600">
-                    {row.avg_orders.toFixed(2)}
+                    {Number(row.avg_orders).toFixed(2)}
                   </TableCell>
                 </TableRow>
               ))}

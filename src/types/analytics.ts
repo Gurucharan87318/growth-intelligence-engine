@@ -7,6 +7,7 @@ export type OverviewMetrics = {
 };
 
 export type ChannelPerformanceRow = {
+  [x: string]: any;
   acquisition_channel: string;
   retention_score: number;
   cac: number;
