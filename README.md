@@ -1,106 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Growth Intelligence Engine
 
-## Getting Started
+A full-stack growth analytics workspace built with Next.js, TypeScript, Tailwind CSS, and PostgreSQL.  
+It helps teams analyze customer value, acquisition efficiency, churn risk, cohort behavior, and revenue concentration through a decision-oriented dashboard.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Growth Intelligence Engine is designed as a strategy and analytics layer for e-commerce and growth-focused businesses. It combines backend SQL-driven metrics with a frontend interface for surfacing trends, comparing channels, and testing business assumptions.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application includes:
+- Executive analytics overview
+- Channel performance analysis
+- Churn summary
+- Cohort retention tracking
+- High-value customer identification
+- Growth and unit economics simulators
+- Strategy-focused recommendation surfaces
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Analytics Overview**: Core metrics such as total users, total revenue, average order value, purchase frequency, and average CLV.
+- **Channel Performance**: Compare acquisition channels by users, revenue, average CLV, and average order behavior.
+- **Churn Summary**: Identify active vs churned users based on recent purchase activity.
+- **Cohort Retention**: Track retention by signup cohort over time.
+- **High-Value Customers**: Surface top customers by lifetime revenue.
+- **Growth Simulator**: Test changes in churn and monetization assumptions.
+- **Business Model Simulator**: Explore unit economics across SaaS, Marketplace, and E-commerce scenarios.
+- **Strategy Recommendations**: Translate analytics outputs into practical business actions.
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-src/
-  app/
-    page.tsx
-    market-opportunity/
-      page.tsx
-    growth-intelligence/
-      page.tsx
-    unit-economics/
-      page.tsx
-    strategy-memo/
-      page.tsx
-
-  features/
-    shared/
-      components/
-        PageContainer.tsx
-        Section.tsx
-        SectionHeader.tsx
-        MetricCard.tsx
-      lib/
-        formatters.ts
-      types/
-        common.ts
-
-    market-opportunity/
-      components/
-        MarketOpportunityView.tsx
-        SegmentBarChart.tsx
-        AttractivenessScorecard.tsx
-      lib/
-        queries.ts
-        types.ts
-
-    growth-intelligence/
-      components/
-        GrowthIntelligenceView.tsx
-        ChannelPerformanceChart.tsx
-        CohortRetentionChart.tsx
-      lib/
-        queries.ts
-        types.ts
-
-    unit-economics/
-      components/
-        UnitEconomicsView.tsx
-        ScenarioBarChart.tsx
-        LeverImpactList.tsx
-      lib/
-        queries.ts
-        types.ts
-
-    strategy-memo/
-      components/
-        StrategyMemoView.tsx
-        RecommendationList.tsx
-        StakeholderViews.tsx
-      lib/
-        queries.ts
-        types.ts
-
-  components/
-    sections/
-      NavBar.tsx
-      Footer.tsx
-
-  lib/
-    supabase/
-      server.ts
-      client.ts
+- **Framework**: Next.js
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn-style component architecture
+- **Charts**: Recharts
+- **Database**: PostgreSQL / Supabase Postgres
+- **Database Client**: `postgres`
+- **Validation**: Zod
