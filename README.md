@@ -111,6 +111,6 @@ Database Sync: If utilizing Supabase, ensure your production database schema is 
 ## Contact and Project Context
 
 **Gurucharan Senthilkumar** * **LinkedIn:** [https://www.linkedin.com/in/gurucharansenthilkumar/]  
-* **Project Goal:** To productize strategic consulting workflows for high-growth startups and the Tamil diaspora entrepreneurial ecosystem.
+* **Project Goal:** To productize strategic consulting workflows for high-growth startups.
 
 ---
