@@ -1,3 +1,13 @@
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import type { HighValueCustomer } from "@/types/analytics";
 
 type HighValueCustomersProps = {
@@ -15,57 +25,88 @@ export function HighValueCustomers({
   customers,
 }: HighValueCustomersProps) {
   return (
-    <section className="section-block pt-0">
-      <div className="page-shell">
-        <div className="glass-card">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            High-value customers
-          </h2>
-          <p className="mt-3 max-w-2xl text-slate-600">
-            These are the users contributing the most total revenue in the
-            simulated dataset.
+    <Card className="border-slate-200 bg-white shadow-sm">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_summary
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_channels
+          </Badge>
+        </div>
+
+        <div className="space-y-2">
+          <CardTitle className="text-2xl font-semibold tracking-tight text-slate-900">
+            High-Value Customers
+          </CardTitle>
+
+          <p className="text-sm font-medium text-slate-700">
+            Customer value concentration and revenue quality
           </p>
 
-          <div className="mt-8 overflow-x-auto">
-            <table className="min-w-full border-separate border-spacing-y-3">
-              <thead>
-                <tr className="text-left text-sm text-slate-500">
-                  <th className="px-4 py-2 font-medium">User ID</th>
-                  <th className="px-4 py-2 font-medium">Channel</th>
-                  <th className="px-4 py-2 font-medium">Orders</th>
-                  <th className="px-4 py-2 font-medium">Order Value</th>
-                  <th className="px-4 py-2 font-medium">Total Revenue</th>
-                  <th className="px-4 py-2 font-medium">Last Purchase</th>
-                </tr>
-              </thead>
-              <tbody>
-                {customers.map((customer) => (
-                  <tr key={customer.user_id} className="bg-white/90">
-                    <td className="rounded-l-2xl px-4 py-4 font-medium text-slate-900">
-                      #{customer.user_id}
-                    </td>
-                    <td className="px-4 py-4 text-slate-700">
-                      {customer.acquisition_channel}
-                    </td>
-                    <td className="px-4 py-4 text-slate-700">
-                      {customer.orders}
-                    </td>
-                    <td className="px-4 py-4 text-slate-700">
-                      {formatCurrency(customer.order_value)}
-                    </td>
-                    <td className="px-4 py-4 font-medium text-slate-900">
-                      {formatCurrency(customer.total_revenue)}
-                    </td>
-                    <td className="rounded-r-2xl px-4 py-4 text-slate-700">
-                      {customer.last_purchase_date}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <p className="max-w-3xl text-sm leading-6 text-slate-500">
+            This table surfaces the customer records contributing the most
+            revenue within the current backend-fed analysis layer. It helps
+            identify where revenue concentration is strongest and which channels
+            are producing the most valuable users.
+          </p>
         </div>
-      </div>
-    </section>
+      </CardHeader>
+
+      <CardContent>
+        <div className="overflow-x-auto rounded-2xl border border-slate-200">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-slate-50">
+                <TableHead className="text-slate-600">User ID</TableHead>
+                <TableHead className="text-slate-600">Channel</TableHead>
+                <TableHead className="text-right text-slate-600">Orders</TableHead>
+                <TableHead className="text-right text-slate-600">
+                  Order Value
+                </TableHead>
+                <TableHead className="text-right text-slate-600">
+                  Total Revenue
+                </TableHead>
+                <TableHead className="text-right text-slate-600">
+                  Last Purchase
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {customers.map((customer) => (
+                <TableRow key={customer.user_id}>
+                  <TableCell className="font-medium text-slate-900">
+                    #{customer.user_id}
+                  </TableCell>
+                  <TableCell className="text-slate-600">
+                    {customer.acquisition_channel}
+                  </TableCell>
+                  <TableCell className="text-right text-slate-600">
+                    {customer.orders}
+                  </TableCell>
+                  <TableCell className="text-right text-slate-600">
+                    {formatCurrency(customer.order_value)}
+                  </TableCell>
+                  <TableCell className="text-right font-medium text-slate-900">
+                    {formatCurrency(customer.total_revenue)}
+                  </TableCell>
+                  <TableCell className="text-right text-slate-600">
+                    {customer.last_purchase_date}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

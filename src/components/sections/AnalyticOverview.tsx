@@ -1,4 +1,12 @@
-import type { OverviewMetrics, ChurnSummary } from "@/types/analytics";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { LiveDataStatus } from "@/features/shared/components/LiveDataStatus";
+import type { ChurnSummary, OverviewMetrics } from "@/types/analytics";
 
 type AnalyticsOverviewProps = {
   overview: OverviewMetrics;
@@ -44,26 +52,61 @@ export function AnalyticsOverview({
   ];
 
   return (
-    <section id="analytics" className="section-block">
-      <div className="page-shell">
-        <span className="eyebrow">Analytics Snapshot</span>
-        <h2 className="section-title mt-6">Core business metrics</h2>
-        <p className="section-copy">
-          A quick view of growth, customer value, and retention risk based on
-          the simulated e-commerce user base.
-        </p>
-
-        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {cards.map((card) => (
-            <div key={card.label} className="metric-card">
-              <p className="text-sm text-slate-500">{card.label}</p>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
-                {card.value}
-              </p>
-            </div>
-          ))}
+    <Card className="border-slate-200 bg-white shadow-sm">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_summary
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_channels
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_cohorts
+          </Badge>
         </div>
-      </div>
-    </section>
+
+        <div className="space-y-2">
+          <CardTitle className="text-2xl font-semibold tracking-tight text-slate-900">
+            Analytics Snapshot
+          </CardTitle>
+
+          <p className="text-sm font-medium text-slate-700">
+            Live backend-backed business metrics
+          </p>
+
+          <p className="max-w-3xl text-sm leading-6 text-slate-500">
+            This overview pulls growth, monetization, and retention signals
+            directly from structured backend datasets to create a
+            decision-ready operating snapshot.
+          </p>
+        </div>
+      </CardHeader>
+
+      <CardContent className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {cards.map((card) => (
+          <div
+            key={card.label}
+            className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+          >
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">
+              {card.label}
+            </p>
+            <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
+              {card.value}
+            </p>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }

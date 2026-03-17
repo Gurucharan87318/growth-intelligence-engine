@@ -1,3 +1,13 @@
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import type { ChannelPerformanceRow } from "@/types/analytics";
 
 type ChannelPerformanceProps = {
@@ -13,51 +23,79 @@ const formatCurrency = (value: number) =>
 
 export function ChannelPerformance({ rows }: ChannelPerformanceProps) {
   return (
-    <section className="section-block pt-0">
-      <div className="page-shell">
-        <div className="glass-card">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Channel performance
-          </h2>
-          <p className="mt-3 max-w-2xl text-slate-600">
-            Compare acquisition channels by user volume, revenue, average CLV,
-            and average order behavior.
+    <Card className="border-slate-200 bg-white shadow-sm">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_channels
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_summary
+          </Badge>
+        </div>
+
+        <div className="space-y-2">
+          <CardTitle className="text-2xl font-semibold tracking-tight text-slate-900">
+            Channel Performance
+          </CardTitle>
+
+          <p className="text-sm font-medium text-slate-700">
+            Comparative acquisition and monetization efficiency
           </p>
 
-          <div className="mt-8 overflow-x-auto">
-            <table className="min-w-full border-separate border-spacing-y-3">
-              <thead>
-                <tr className="text-left text-sm text-slate-500">
-                  <th className="px-4 py-2 font-medium">Channel</th>
-                  <th className="px-4 py-2 font-medium">Users</th>
-                  <th className="px-4 py-2 font-medium">Revenue</th>
-                  <th className="px-4 py-2 font-medium">Avg CLV</th>
-                  <th className="px-4 py-2 font-medium">Avg Orders</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr key={row.acquisition_channel} className="bg-white/90">
-                    <td className="rounded-l-2xl px-4 py-4 font-medium text-slate-900">
-                      {row.acquisition_channel}
-                    </td>
-                    <td className="px-4 py-4 text-slate-700">{row.users}</td>
-                    <td className="px-4 py-4 text-slate-700">
-                      {formatCurrency(row.revenue)}
-                    </td>
-                    <td className="px-4 py-4 text-slate-700">
-                      {formatCurrency(row.avg_clv)}
-                    </td>
-                    <td className="rounded-r-2xl px-4 py-4 text-slate-700">
-                      {row.avg_orders.toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <p className="max-w-3xl text-sm leading-6 text-slate-500">
+            This table reads channel-level acquisition and revenue data from the
+            backend to compare scale, quality, and monetization across customer
+            acquisition sources.
+          </p>
         </div>
-      </div>
-    </section>
+      </CardHeader>
+
+      <CardContent>
+        <div className="overflow-x-auto rounded-2xl border border-slate-200">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-slate-50">
+                <TableHead className="text-slate-600">Channel</TableHead>
+                <TableHead className="text-right text-slate-600">Users</TableHead>
+                <TableHead className="text-right text-slate-600">Revenue</TableHead>
+                <TableHead className="text-right text-slate-600">Avg CLV</TableHead>
+                <TableHead className="text-right text-slate-600">
+                  Avg Orders
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {rows.map((row) => (
+                <TableRow key={row.acquisition_channel}>
+                  <TableCell className="font-medium text-slate-900">
+                    {row.acquisition_channel}
+                  </TableCell>
+                  <TableCell className="text-right text-slate-600">
+                    {row.users.toLocaleString("en-IN")}
+                  </TableCell>
+                  <TableCell className="text-right text-slate-600">
+                    {formatCurrency(row.revenue)}
+                  </TableCell>
+                  <TableCell className="text-right text-slate-600">
+                    {formatCurrency(row.avg_clv)}
+                  </TableCell>
+                  <TableCell className="text-right text-slate-600">
+                    {row.avg_orders.toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

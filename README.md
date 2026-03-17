@@ -34,3 +34,73 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+src/
+  app/
+    page.tsx
+    market-opportunity/
+      page.tsx
+    growth-intelligence/
+      page.tsx
+    unit-economics/
+      page.tsx
+    strategy-memo/
+      page.tsx
+
+  features/
+    shared/
+      components/
+        PageContainer.tsx
+        Section.tsx
+        SectionHeader.tsx
+        MetricCard.tsx
+      lib/
+        formatters.ts
+      types/
+        common.ts
+
+    market-opportunity/
+      components/
+        MarketOpportunityView.tsx
+        SegmentBarChart.tsx
+        AttractivenessScorecard.tsx
+      lib/
+        queries.ts
+        types.ts
+
+    growth-intelligence/
+      components/
+        GrowthIntelligenceView.tsx
+        ChannelPerformanceChart.tsx
+        CohortRetentionChart.tsx
+      lib/
+        queries.ts
+        types.ts
+
+    unit-economics/
+      components/
+        UnitEconomicsView.tsx
+        ScenarioBarChart.tsx
+        LeverImpactList.tsx
+      lib/
+        queries.ts
+        types.ts
+
+    strategy-memo/
+      components/
+        StrategyMemoView.tsx
+        RecommendationList.tsx
+        StakeholderViews.tsx
+      lib/
+        queries.ts
+        types.ts
+
+  components/
+    sections/
+      NavBar.tsx
+      Footer.tsx
+
+  lib/
+    supabase/
+      server.ts
+      client.ts

@@ -7,6 +7,6 @@ if (!connectionString) {
 }
 
 export const sql = postgres(connectionString, {
-  ssl: "require",
+  ssl: process.env.NODE_ENV === "production" ? "require" : "prefer",
   prepare: false,
 });

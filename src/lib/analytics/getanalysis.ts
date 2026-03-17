@@ -1,4 +1,4 @@
-import { sql } from "@/lib/db";
+import { sql } from "@/lib/analytics/db";
 import type {
   AnalyticsResponse,
   ChannelPerformanceRow,
@@ -47,14 +47,14 @@ export async function getAnalyticsData(): Promise<AnalyticsResponse> {
 
   const channelPerformanceRows = await sql`
     select
-      acquisition_channel,
-      count(*)::int as users,
-      coalesce(sum(order_value * orders), 0)::float as revenue,
-      coalesce(avg(order_value * orders), 0)::float as avg_clv,
-      coalesce(avg(orders), 0)::float as avg_orders
-    from public.users
-    group by acquisition_channel
-    order by revenue desc;
+      channel_name as acquisition_channel,
+      retention_score::float as retention_score,
+      cac::float as cac,
+      ltv::float as ltv,
+      conversion_rate::float as conversion_rate,
+      acquisition_share::float as acquisition_share
+    from public.growth_channels
+    order by sort_order asc, channel_name asc;
   `;
 
   const churnSummaryRows = await sql`
@@ -75,44 +75,14 @@ export async function getAnalyticsData(): Promise<AnalyticsResponse> {
   `;
 
   const cohortRetentionRows = await sql`
-    with cohort_items as (
-      select
-        u.user_id,
-        date_trunc('month', u.signup_date)::date as cohort_month
-      from public.users u
-    ),
-    user_activities as (
-      select distinct
-        ci.user_id,
-        ci.cohort_month,
-        (
-          (extract(year from date_trunc('month', o.order_date)) - extract(year from ci.cohort_month)) * 12 +
-          (extract(month from date_trunc('month', o.order_date)) - extract(month from ci.cohort_month))
-        )::int as month_number
-      from cohort_items ci
-      join public.orders o on o.user_id = ci.user_id
-      where o.order_date >= ci.cohort_month
-    ),
-    cohort_size as (
-      select
-        cohort_month,
-        count(*)::int as cohort_size
-      from cohort_items
-      group by cohort_month
-    )
     select
-      ua.cohort_month,
-      ua.month_number,
-      cs.cohort_size,
-      count(distinct ua.user_id)::int as retained_users,
-      round(
-        count(distinct ua.user_id)::numeric / nullif(cs.cohort_size, 0) * 100,
-        2
-      )::float as retention_rate
-    from user_activities ua
-    join cohort_size cs on cs.cohort_month = ua.cohort_month
-    group by ua.cohort_month, ua.month_number, cs.cohort_size
-    order by ua.cohort_month, ua.month_number;
+      cohort_label as cohort_month,
+      month_index::int as month_number,
+      users_count::int as cohort_size,
+      round((users_count * retention_rate / 100.0))::int as retained_users,
+      retention_rate::float as retention_rate
+    from public.growth_cohorts
+    order by cohort_label asc, month_index asc, sort_order asc;
   `;
 
   const highValueCustomerRows = await sql`

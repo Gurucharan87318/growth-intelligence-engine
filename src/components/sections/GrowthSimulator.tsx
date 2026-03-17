@@ -2,10 +2,14 @@
 
 import { useMemo, useState } from "react";
 
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import type { ChurnSummary, OverviewMetrics } from "@/types/analytics";
+
 type GrowthSimulatorProps = {
-  totalUsers: number;
-  averageClv: number;
-  currentChurnRate: number;
+  overview: OverviewMetrics;
+  churnSummary: ChurnSummary;
 };
 
 const formatCurrency = (value: number) =>
@@ -15,156 +19,182 @@ const formatCurrency = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
+function getSliderNumber(value: number | readonly number[]) {
+  if (Array.isArray(value)) {
+    return value[0] ?? 0;
+  }
+
+  return value;
+}
+
 export function GrowthSimulator({
-  totalUsers,
-  averageClv,
-  currentChurnRate,
+  overview,
+  churnSummary,
 }: GrowthSimulatorProps) {
   const [targetChurnRate, setTargetChurnRate] = useState(
-    Number(currentChurnRate.toFixed(2))
+    Number(churnSummary.churn_rate_percentage.toFixed(2))
   );
-  const [revenueLift, setRevenueLift] = useState(8);
+  const [revenueLift, setRevenueLift] = useState(10);
 
   const results = useMemo(() => {
-    const currentRetainedUsers = totalUsers * (1 - currentChurnRate / 100);
-    const projectedRetainedUsers = totalUsers * (1 - targetChurnRate / 100);
+    const currentRetainedUsers =
+      overview.total_users * (1 - churnSummary.churn_rate_percentage / 100);
 
-    const baselineRevenue = currentRetainedUsers * averageClv;
-    const projectedRevenue =
-      projectedRetainedUsers * averageClv * (1 + revenueLift / 100);
+    const projectedRetainedUsers =
+      overview.total_users * (1 - targetChurnRate / 100);
 
     const retainedUserDelta = projectedRetainedUsers - currentRetainedUsers;
-    const revenueDelta = projectedRevenue - baselineRevenue;
+
+    const currentRevenueEstimate =
+      currentRetainedUsers * overview.average_clv;
+
+    const projectedRevenue =
+      projectedRetainedUsers * overview.average_clv * (1 + revenueLift / 100);
+
+    const revenueDelta = projectedRevenue - currentRevenueEstimate;
 
     return {
-      baselineRevenue,
-      projectedRevenue,
-      retainedUserDelta,
-      revenueDelta,
       currentRetainedUsers,
       projectedRetainedUsers,
+      retainedUserDelta,
+      projectedRevenue,
+      revenueDelta,
     };
-  }, [averageClv, currentChurnRate, revenueLift, targetChurnRate, totalUsers]);
+  }, [
+    overview,
+    churnSummary.churn_rate_percentage,
+    targetChurnRate,
+    revenueLift,
+  ]);
 
   return (
-    <section className="section-block pt-0">
-      <div className="page-shell">
-        <div className="glass-card" id="growth-simulator">
-          <span className="eyebrow">Growth Simulator</span>
+    <Card className="border-slate-200 bg-white shadow-sm">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_summary
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_cohorts
+          </Badge>
+        </div>
 
-          <h2 className="mt-6 text-3xl font-semibold tracking-tight">
-            Revenue impact simulator
-          </h2>
+        <div className="space-y-2">
+          <CardTitle className="text-2xl font-semibold tracking-tight text-slate-900">
+            Growth Scenario Simulator
+          </CardTitle>
 
-          <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600 md:text-lg">
-            Adjust churn and revenue uplift assumptions to estimate the business
-            impact of better retention and monetization.
+          <p className="text-sm font-medium text-slate-700">
+            Strategy scenarios built on top of current backend metrics
           </p>
 
-          <div className="mt-10 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="space-y-8">
-              <div>
-                <div className="flex items-center justify-between gap-4">
-                  <label
-                    htmlFor="targetChurnRate"
-                    className="text-sm font-medium text-slate-700"
-                  >
-                    Target churn rate
-                  </label>
-                  <span className="text-sm font-semibold text-slate-900">
-                    {targetChurnRate.toFixed(2)}%
-                  </span>
-                </div>
+          <p className="max-w-3xl text-sm leading-6 text-slate-500">
+            This simulator applies scenario assumptions on top of the current
+            retention and customer value metrics. It is meant to support
+            strategic thinking, not replace a full forecasting model.
+          </p>
+        </div>
+      </CardHeader>
 
-                <input
-                  id="targetChurnRate"
-                  type="range"
-                  min={0}
-                  max={Math.max(60, Math.ceil(currentChurnRate))}
-                  step={0.5}
-                  value={targetChurnRate}
-                  onChange={(event) =>
-                    setTargetChurnRate(Number(event.target.value))
-                  }
-                  className="mt-3 w-full accent-violet-600"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between gap-4">
-                  <label
-                    htmlFor="revenueLift"
-                    className="text-sm font-medium text-slate-700"
-                  >
-                    Revenue uplift per retained user
-                  </label>
-                  <span className="text-sm font-semibold text-slate-900">
-                    {revenueLift}%
-                  </span>
-                </div>
-
-                <input
-                  id="revenueLift"
-                  type="range"
-                  min={0}
-                  max={30}
-                  step={1}
-                  value={revenueLift}
-                  onChange={(event) =>
-                    setRevenueLift(Number(event.target.value))
-                  }
-                  className="mt-3 w-full accent-pink-500"
-                />
-              </div>
-
-              <div className="rounded-2xl border border-black/10 bg-white/80 p-5">
-                <p className="text-sm text-slate-500">Scenario logic</p>
-                <p className="mt-2 leading-7 text-slate-700">
-                  Projected revenue is estimated as retained users multiplied by
-                  average CLV, then adjusted by the revenue uplift assumption.
-                  This is a simple strategy simulation, not a forecasting model.
-                </p>
-              </div>
+      <CardContent className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="space-y-8">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm font-medium text-slate-700">
+                Target churn rate
+              </p>
+              <p className="text-sm font-semibold text-slate-900">
+                {targetChurnRate.toFixed(2)}%
+              </p>
             </div>
 
-            <div className="grid gap-4">
-              <div className="metric-card">
-                <p className="text-sm text-slate-500">Current Retained Users</p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
-                  {Math.round(results.currentRetainedUsers).toLocaleString(
-                    "en-IN"
-                  )}
-                </p>
-              </div>
+            <Slider
+              value={[targetChurnRate]}
+              min={1}
+              max={Math.max(1, Math.ceil(churnSummary.churn_rate_percentage))}
+              step={0.5}
+              onValueChange={(value) =>
+                setTargetChurnRate(getSliderNumber(value))
+              }
+            />
+          </div>
 
-              <div className="metric-card">
-                <p className="text-sm text-slate-500">
-                  Projected Retained Users
-                </p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
-                  {Math.round(results.projectedRetainedUsers).toLocaleString(
-                    "en-IN"
-                  )}
-                </p>
-              </div>
-
-              <div className="metric-card">
-                <p className="text-sm text-slate-500">Revenue Change</p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
-                  {formatCurrency(results.revenueDelta)}
-                </p>
-              </div>
-
-              <div className="metric-card">
-                <p className="text-sm text-slate-500">Projected Revenue</p>
-                <p className="mt-3 text-3xl font-semibold tracking-tight text-slate-900">
-                  {formatCurrency(results.projectedRevenue)}
-                </p>
-              </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-4">
+              <p className="text-sm font-medium text-slate-700">
+                Revenue uplift per retained user
+              </p>
+              <p className="text-sm font-semibold text-slate-900">
+                {revenueLift}%
+              </p>
             </div>
+
+            <Slider
+              value={[revenueLift]}
+              min={0}
+              max={50}
+              step={1}
+              onValueChange={(value) => setRevenueLift(getSliderNumber(value))}
+            />
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              Scenario logic
+            </p>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Projected revenue is estimated from retained users multiplied by
+              average CLV, then adjusted by the revenue uplift assumption. This
+              helps show the directional business impact of improved retention
+              and monetization quality.
+            </p>
           </div>
         </div>
-      </div>
-    </section>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              Current retained users
+            </p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900">
+              {Math.round(results.currentRetainedUsers).toLocaleString("en-IN")}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              Projected retained users
+            </p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900">
+              {Math.round(results.projectedRetainedUsers).toLocaleString("en-IN")}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              Revenue change
+            </p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900">
+              {formatCurrency(results.revenueDelta)}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              Projected revenue
+            </p>
+            <p className="mt-2 text-2xl font-semibold text-slate-900">
+              {formatCurrency(results.projectedRevenue)}
+            </p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

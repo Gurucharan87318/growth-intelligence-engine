@@ -8,10 +8,11 @@ export type OverviewMetrics = {
 
 export type ChannelPerformanceRow = {
   acquisition_channel: string;
-  users: number;
-  revenue: number;
-  avg_clv: number;
-  avg_orders: number;
+  retention_score: number;
+  cac: number;
+  ltv: number;
+  conversion_rate: number;
+  acquisition_share: number;
 };
 
 export type ChurnSummary = {
@@ -27,7 +28,6 @@ export type CohortRetentionRow = {
   retained_users: number;
   retention_rate: number;
 };
-
 
 export type HighValueCustomer = {
   user_id: number;

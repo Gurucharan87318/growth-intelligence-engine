@@ -1,3 +1,5 @@
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type {
   ChannelPerformanceRow,
   ChurnSummary,
@@ -52,11 +54,14 @@ function buildRecommendations({
     });
   }
 
-  if (totalTopCustomerRevenue / overview.total_revenue > 0.2) {
+  if (
+    overview.total_revenue > 0 &&
+    totalTopCustomerRevenue / overview.total_revenue > 0.2
+  ) {
     recommendations.push({
       title: "Protect high-value customer revenue",
       summary:
-        "A meaningful share of total revenue is concentrated among the top customers in the dataset.",
+        "A meaningful share of total revenue is concentrated among the highest-value customers in the current analysis layer.",
       action:
         "Introduce VIP retention tactics such as early access, loyalty tiers, concierge support, or personalized cross-sell journeys.",
     });
@@ -79,37 +84,76 @@ export function StrategicRecommendations(
   const recommendations = buildRecommendations(props);
 
   return (
-    <section className="section-block pt-0">
-      <div className="page-shell">
-        <div className="glass-card" id="strategic-recommendations">
-          <span className="eyebrow">Strategic Recommendations</span>
+    <Card className="border-slate-200 bg-white shadow-sm">
+      <CardHeader className="space-y-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_summary
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_channels
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 text-slate-700 hover:bg-slate-100"
+          >
+            growth_cohorts
+          </Badge>
+        </div>
 
-          <h2 className="mt-6 text-3xl font-semibold tracking-tight">
+        <div className="space-y-2">
+          <CardTitle className="text-2xl font-semibold tracking-tight text-slate-900">
+            Strategic Recommendations
+          </CardTitle>
+
+          <p className="text-sm font-medium text-slate-700">
             What the business should do next
-          </h2>
-
-          <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600 md:text-lg">
-            These recommendations are generated from the current analytics
-            outputs and framed as practical growth actions for an e-commerce
-            team.
           </p>
 
-          <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {recommendations.map((item) => (
-              <div key={item.title} className="metric-card">
-                <p className="text-sm font-medium text-slate-500">Recommendation</p>
-                <h3 className="mt-3 text-xl font-semibold tracking-tight text-slate-900">
-                  {item.title}
-                </h3>
-                <p className="mt-3 leading-7 text-slate-600">{item.summary}</p>
-                <div className="mt-4 rounded-2xl bg-violet-50 px-4 py-3 text-sm leading-6 text-slate-700">
-                  {item.action}
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="max-w-3xl text-sm leading-6 text-slate-500">
+            These recommendations are synthesized from backend-fed growth,
+            retention, channel, and customer value signals. The goal is to turn
+            analytical outputs into practical operating actions that a product,
+            growth, or strategy team can act on.
+          </p>
         </div>
-      </div>
-    </section>
+      </CardHeader>
+
+      <CardContent className="grid gap-4">
+        {recommendations.map((item, index) => (
+          <div
+            key={`${item.title}-${index}`}
+            className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+              Recommendation {index + 1}
+            </p>
+
+            <h3 className="mt-2 text-lg font-semibold tracking-tight text-slate-900">
+              {item.title}
+            </h3>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              {item.summary}
+            </p>
+
+            <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                Suggested action
+              </p>
+              <p className="mt-2 text-sm leading-6 text-slate-700">
+                {item.action}
+              </p>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
   );
 }
