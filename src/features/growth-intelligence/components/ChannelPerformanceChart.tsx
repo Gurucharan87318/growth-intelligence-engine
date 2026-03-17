@@ -30,8 +30,8 @@ export function ChannelPerformance({ rows }: ChannelPerformanceProps) {
               Acquisition comparison
             </CardTitle>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Compare channels by retention, CAC, LTV, conversion quality, and
-              traffic share.
+              Compare channels by user volume, revenue contribution, average CLV,
+              and average order behavior.
             </p>
           </CardHeader>
 
@@ -40,11 +40,10 @@ export function ChannelPerformance({ rows }: ChannelPerformanceProps) {
               <TableHeader>
                 <TableRow>
                   <TableHead>Channel</TableHead>
-                  <TableHead>Retention</TableHead>
-                  <TableHead>CAC</TableHead>
-                  <TableHead>LTV</TableHead>
-                  <TableHead>Conv</TableHead>
-                  <TableHead>Share</TableHead>
+                  <TableHead className="text-right">Users</TableHead>
+                  <TableHead className="text-right">Revenue</TableHead>
+                  <TableHead className="text-right">Avg CLV</TableHead>
+                  <TableHead className="text-right">Avg Orders</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -54,11 +53,18 @@ export function ChannelPerformance({ rows }: ChannelPerformanceProps) {
                     <TableCell className="font-medium">
                       {row.acquisition_channel}
                     </TableCell>
-                    <TableCell>{row.retention_score}</TableCell>
-                    <TableCell>{formatCurrency(row.cac)}</TableCell>
-                    <TableCell>{formatCurrency(row.ltv)}</TableCell>
-                    <TableCell>{row.conversion_rate.toFixed(1)}%</TableCell>
-                    <TableCell>{row.acquisition_share.toFixed(1)}%</TableCell>
+                    <TableCell className="text-right">
+                      {row.users.toLocaleString("en-IN")}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(row.revenue)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatCurrency(row.avg_clv)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {row.avg_orders.toFixed(2)}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

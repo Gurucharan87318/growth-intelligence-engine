@@ -7,13 +7,11 @@ export type OverviewMetrics = {
 };
 
 export type ChannelPerformanceRow = {
-  [x: string]: any;
   acquisition_channel: string;
-  retention_score: number;
-  cac: number;
-  ltv: number;
-  conversion_rate: number;
-  acquisition_share: number;
+  users: number;
+  revenue: number;
+  avg_clv: number;
+  avg_orders: number;
 };
 
 export type ChurnSummary = {
